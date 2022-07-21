@@ -1,0 +1,2 @@
+# osrs-dashboard
+Dashboard application to preview OSRS statistics and track progress
