@@ -30,7 +30,7 @@ function MainLayout() {
                 </div>
             </div>
             <div className="flex flex-1 flex-col items-center justify-center">
-                <div className="relative w-[22rem] h-[22rem] opacity-50">
+                <div className="relative w-[22rem] h-[22rem] opacity-70">
                     <Image src="/images/launching.svg" layout="fill" />
                 </div>
                 <div className="text-4xl text-gray-font mb-2">

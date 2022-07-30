@@ -7,7 +7,7 @@ function SideNav() {
     return (
         <div className="flex flex-col items-center p-10 space-y-20 bg-gray-1st">
             <Logo />
-            <NavIcon href="/group">
+            <NavIcon href="/player">
                 <UserGroupIcon className="text-current w-8 h-8" />
             </NavIcon>
             <NavIcon href="/leagues">
@@ -22,9 +22,11 @@ function SideNav() {
 
 function Logo() {
     return (
-        <div className="relative w-16 h-16">
-            <Image src="/images/shark.png" layout="fill" />
-        </div>
+        <Link href="/">
+            <a className="relative w-16 h-16">
+                <Image src="/images/shark.png" layout="fill" />
+            </a>
+        </Link>
     );
 }
 
@@ -35,7 +37,7 @@ interface NavIconProps {
 
 function NavIcon({ children, href }: NavIconProps) {
     const router = useRouter();
-    const isRouteCurrentNav = () => router.pathname == href;
+    const isRouteCurrentNav = () => router.pathname.startsWith(href);
 
     return (
         <Link href={href}>
