@@ -15,8 +15,9 @@ import {
     getTotalLevels,
 } from '../utils/skill.calculator';
 import { trpc } from '../utils/trpc';
-import { LoadingSpinner, Shimmer } from './animation';
+import { FadeIn, LoadingSpinner, Shimmer } from './animation';
 import { IronManIcon, WindRoseIcon } from './icons';
+import { motion } from 'framer-motion';
 
 type PlayerSummaryProps = {
     name: string;
@@ -26,32 +27,36 @@ type PlayerSummaryProps = {
 
 function PlayerSummary({ name, selected, setSelected }: PlayerSummaryProps) {
     const router = useRouter();
-    const { data, isLoading, isFetching, error, refetch } = trpc.useQuery(
+    const [isManualFetching, setIsManualFetching] = useState(false);
+    const { data, isLoading, error, refetch } = trpc.useQuery(
         ['player.get', name],
         {
             retry: false,
             refetchOnWindowFocus: false,
+            onSettled: () => setIsManualFetching(false),
         }
     );
 
     if (error) {
         return (
             <div className="flex flex-1 items-center justify-center text-center">
-                <PlayerSummaryError name={name} error={error} />
+                <FadeIn>
+                    <PlayerSummaryError name={name} error={error} />
+                </FadeIn>
             </div>
         );
     }
 
     if (isLoading) {
         return (
-            <>
+            <FadeIn>
                 <PlayerHeaderSkeleton />
                 <div className="space-y-4">
                     <PlayerContentSkeleton />
                     <PlayerContentSkeleton />
                     <PlayerContentSkeleton />
                 </div>
-            </>
+            </FadeIn>
         );
     }
 
@@ -61,17 +66,20 @@ function PlayerSummary({ name, selected, setSelected }: PlayerSummaryProps) {
             <PlayerHeader
                 data={playerData}
                 refetch={refetch}
-                isFetching={isFetching}
+                isManualFetching={isManualFetching}
+                setIsManualFetching={setIsManualFetching}
             />
+
             <PlayerContent
                 data={playerData}
                 selected={selected}
                 setSelected={setSelected}
             />
+
             <button
                 className="flex items-center transition-all duration-100 ease-in text-primary mt-auto ml-auto border-b border-b-transparent hover:border-b-primary"
                 onClick={() =>
-                    router.push(
+                    window.open(
                         `https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1=${name}`
                     )
                 }
@@ -174,49 +182,58 @@ function PlayerHeaderSkeleton() {
 function PlayerHeader({
     data,
     refetch,
-    isFetching,
+    isManualFetching,
+    setIsManualFetching,
 }: {
     data: PlayerGet;
     refetch: any;
-    isFetching: boolean;
+    isManualFetching: boolean;
+    setIsManualFetching: Setter<boolean>;
 }) {
     return (
-        <div className="flex items-center px-6 pb-10">
-            <div className="flex bg-red rounded-full bg-opacity-50 w-12 h-12 items-center justify-center mr-8">
-                <IronManIcon className="w-6 h-6 stroke-red" />
-            </div>
-            <div>
-                <div className="text-3xl">{data.player.name}</div>
-                <div className="text-gray-font-light font-light">
-                    Lvl {calculateCombatLevel(data.skills)} combat
+        <FadeIn>
+            <div className="flex items-center px-6 pb-10">
+                <div className="flex bg-red rounded-full bg-opacity-50 w-12 h-12 items-center justify-center mr-8">
+                    <IronManIcon className="w-6 h-6 stroke-red" />
                 </div>
+                <div>
+                    <div className="text-3xl">{data.player.name}</div>
+                    <div className="text-gray-font-light font-light">
+                        Lvl {calculateCombatLevel(data.skills)} combat
+                    </div>
+                </div>
+                <button
+                    className="w-8 h-8 transition-all duration-200 ease-out text-gray-font-light ml-auto hover:text-gray-font active:text-white"
+                    onClick={() => {
+                        setIsManualFetching(true);
+                        refetch();
+                    }}
+                >
+                    <RefreshIcon
+                        className={`transform rotate-180 ${
+                            isManualFetching ? 'animate-reverse-spin' : ''
+                        }`}
+                    />
+                </button>
             </div>
-            <button
-                className="w-8 h-8 transition-all duration-200 ease-out text-gray-font-light ml-auto hover:text-gray-font active:text-white"
-                onClick={() => refetch()}
-            >
-                <RefreshIcon
-                    className={`transform rotate-180 ${
-                        isFetching ? 'animate-reverse-spin' : ''
-                    }`}
-                />
-            </button>
-        </div>
+        </FadeIn>
     );
 }
 
 function PlayerContentSkeleton() {
     return (
-        <div className="h-20">
-            <Shimmer>
-                <div className="flex items-center">
-                    <div className="bg-white/20 rounded-full w-12 h-12 items-center justify-center mr-8" />
-                    <div className="space-y-3">
-                        <div className="w-60 h-7 bg-white/10 rounded-lg" />
+        <FadeIn>
+            <div className="h-20">
+                <Shimmer>
+                    <div className="flex items-center">
+                        <div className="bg-white/20 rounded-full w-12 h-12 items-center justify-center mr-8" />
+                        <div className="space-y-3">
+                            <div className="w-60 h-7 bg-white/10 rounded-lg" />
+                        </div>
                     </div>
-                </div>
-            </Shimmer>
-        </div>
+                </Shimmer>
+            </div>
+        </FadeIn>
     );
 }
 
@@ -230,74 +247,76 @@ function PlayerContent({
     setSelected: Setter<SelectedTab>;
 }) {
     return (
-        <div className="flex flex-col space-y-4">
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.stats}
-                textColor="text-purple"
-                groupHoverTextColor="group-hover:text-purple"
-                bgColor="bg-purple"
-                text={`${getTotalLevels(data.skills)} Total Levels`}
-            >
-                <ChartBarIcon className="w-7 h-7 stroke-purple" />
-            </Tab>
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.quests}
-                textColor="text-blue"
-                groupHoverTextColor="group-hover:text-blue"
-                bgColor="bg-blue"
-                text={`${0} Quest Points`}
-            >
-                <WindRoseIcon className="w-7 h-7 stroke-blue" />
-            </Tab>
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.diaries}
-                textColor="text-green"
-                groupHoverTextColor="group-hover:text-green"
-                bgColor="bg-green"
-                text={`${0} Diaries Completed`}
-            >
-                <WindRoseIcon className="w-7 h-7 stroke-green" />
-            </Tab>
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.combatTasks}
-                textColor="text-taupe"
-                groupHoverTextColor="group-hover:text-taupe"
-                bgColor="bg-taupe"
-                text={`${0} Combat Tasks Done`}
-            >
-                <WindRoseIcon className="w-7 h-7 stroke-taupe" />
-            </Tab>
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.bosses}
-                textColor="text-orange"
-                groupHoverTextColor="group-hover:text-orange"
-                bgColor="bg-orange"
-                text={`${0} Bosses Logged`}
-            >
-                <WindRoseIcon className="w-7 h-7 stroke-orange" />
-            </Tab>
-            <Tab
-                selected={selected}
-                setSelected={setSelected}
-                triggerSelected={SelectedTab.clues}
-                textColor="text-yellow"
-                groupHoverTextColor="group-hover:text-yellow"
-                bgColor="bg-yellow"
-                text={`${0} Clues Completed`}
-            >
-                <WindRoseIcon className="w-7 h-7 stroke-yellow" />
-            </Tab>
-        </div>
+        <FadeIn>
+            <div className="flex flex-col space-y-4">
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.stats}
+                    textColor="text-purple"
+                    groupHoverTextColor="group-hover:text-purple"
+                    bgColor="bg-purple"
+                    text={`${getTotalLevels(data.skills)} Total Levels`}
+                >
+                    <ChartBarIcon className="w-7 h-7 stroke-purple" />
+                </Tab>
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.quests}
+                    textColor="text-blue"
+                    groupHoverTextColor="group-hover:text-blue"
+                    bgColor="bg-blue"
+                    text={`${0} Quest Points`}
+                >
+                    <WindRoseIcon className="w-7 h-7 stroke-blue" />
+                </Tab>
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.diaries}
+                    textColor="text-green"
+                    groupHoverTextColor="group-hover:text-green"
+                    bgColor="bg-green"
+                    text={`${0} Diaries Completed`}
+                >
+                    <WindRoseIcon className="w-7 h-7 stroke-green" />
+                </Tab>
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.combatTasks}
+                    textColor="text-taupe"
+                    groupHoverTextColor="group-hover:text-taupe"
+                    bgColor="bg-taupe"
+                    text={`${0} Combat Tasks Done`}
+                >
+                    <WindRoseIcon className="w-7 h-7 stroke-taupe" />
+                </Tab>
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.bosses}
+                    textColor="text-orange"
+                    groupHoverTextColor="group-hover:text-orange"
+                    bgColor="bg-orange"
+                    text={`${0} Bosses Logged`}
+                >
+                    <WindRoseIcon className="w-7 h-7 stroke-orange" />
+                </Tab>
+                <Tab
+                    selected={selected}
+                    setSelected={setSelected}
+                    triggerSelected={SelectedTab.clues}
+                    textColor="text-yellow"
+                    groupHoverTextColor="group-hover:text-yellow"
+                    bgColor="bg-yellow"
+                    text={`${0} Clues Completed`}
+                >
+                    <WindRoseIcon className="w-7 h-7 stroke-yellow" />
+                </Tab>
+            </div>
+        </FadeIn>
     );
 }
 

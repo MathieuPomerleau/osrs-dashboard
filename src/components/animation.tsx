@@ -1,4 +1,6 @@
-function Shimmer({ children }: { children: JSX.Element }) {
+import { AnimatePresence, motion } from 'framer-motion';
+
+export function Shimmer({ children }: { children: JSX.Element }) {
     return (
         <div className="relative w-full h-full rounded-xl overflow-hidden before:border-t before:border-t-white/10 bg-white/5 p-4 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/10 before:to-transparent">
             {children}
@@ -6,7 +8,7 @@ function Shimmer({ children }: { children: JSX.Element }) {
     );
 }
 
-function LoadingSpinner({ className }: { className: string }) {
+export function LoadingSpinner({ className }: { className: string }) {
     return (
         <svg
             className={`animate-spin ${className}`}
@@ -31,4 +33,20 @@ function LoadingSpinner({ className }: { className: string }) {
     );
 }
 
-export { Shimmer, LoadingSpinner };
+export function FadeIn({
+    children,
+}: {
+    children: JSX.Element | JSX.Element[];
+}) {
+    return (
+        <AnimatePresence>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+            >
+                {children}
+            </motion.div>
+        </AnimatePresence>
+    );
+}

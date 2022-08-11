@@ -1,8 +1,10 @@
 import { PlayerGet } from '../model/queries';
 import { SelectedTab, Skill } from '../model/ui';
 import { trpc } from '../utils/trpc';
+import { FadeIn } from './animation';
 import { ResolveIconByKey } from './icons';
 import SearchBar from './search.bar';
+import Image from 'next/image';
 
 type PlayerContentProps = {
     name: string;
@@ -16,23 +18,37 @@ function PlayerContent({ name, selected }: PlayerContentProps) {
     });
 
     if (error) {
-        return <div>Error</div>;
+        return (
+            <FadeIn>
+                <div className="flex w-full justify-between items-center">
+                    <SearchBar />
+                </div>
+            </FadeIn>
+        );
     }
 
     if (isLoading) {
-        return <div>isLoading</div>;
+        return (
+            <FadeIn>
+                <div className="flex w-full justify-between items-center">
+                    <SearchBar />
+                </div>
+            </FadeIn>
+        );
     }
 
     const playerData = data as PlayerGet;
     return (
         <>
             <div className="flex w-full justify-between items-center">
-                <SearchBar />
+                <FadeIn>
+                    <SearchBar />
+                </FadeIn>
             </div>
             <div className="flex flex-1 items-center justify-center">
                 <RenderContainerBySelected
                     data={playerData}
-                    selected={SelectedTab.stats}
+                    selected={selected}
                 />
             </div>
         </>
@@ -50,17 +66,19 @@ function RenderContainerBySelected({
         case SelectedTab.stats:
             return <StatContainer data={data} />;
         default:
-            return <div>Unknown selection</div>;
+            return <EmptyContainer />;
     }
 }
 
 function StatContainer({ data }: { data: PlayerGet }) {
     return (
-        <div className="grid grid-cols-3 grid-rows-8 gap-y-6 gap-x-12">
-            {Array.from(data.skills.values()).map((value) => (
-                <StatBox key={value.name} value={value} />
-            ))}
-        </div>
+        <FadeIn>
+            <div className="grid grid-cols-3 grid-rows-8 gap-y-6 gap-x-12">
+                {Array.from(data.skills.values()).map((value) => (
+                    <StatBox key={value.name} value={value} />
+                ))}
+            </div>
+        </FadeIn>
     );
 }
 
@@ -77,6 +95,29 @@ function StatBox({ value }: { value: Skill }) {
                 <div className="text-gray-font-light">99</div>
             </div>
         </div>
+    );
+}
+
+function EmptyContainer() {
+    return (
+        <FadeIn>
+            <div className="flex flex-1 flex-col items-center justify-center">
+                <div className="relative w-[20rem] h-[20rem] opacity-60">
+                    <Image
+                        src="/images/choose.svg"
+                        layout="fill"
+                        alt="Empty search image"
+                    />
+                </div>
+                <div className="text-4xl text-gray-font mb-2 mt-8">
+                    No category selected
+                </div>
+                <div className="text-lg font-light text-gray-font-light w-[26rem] text-center">
+                    Each category expands into a more detailed view. Select one
+                    to get started.
+                </div>
+            </div>
+        </FadeIn>
     );
 }
 
