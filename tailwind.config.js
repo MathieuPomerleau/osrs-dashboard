@@ -11,7 +11,7 @@ module.exports = {
             red: '#FF5252',
             orange: '#FFA654',
             yellow: '#FCFF81',
-            green: '#8BFF81',
+            green: { DEFAULT: '#8BFF81', light: '#b3ffad' },
             blue: '#67BFFF',
             purple: '#B880FF',
             taupe: '#CDBCAC',
@@ -24,14 +24,30 @@ module.exports = {
                 '3rd': '#363636',
                 font: '#C5C5C5',
                 'font-light': '#6A6A6A',
+                'font-lightest': '#464646',
             },
         },
         extend: {
+            animation: {
+                'reverse-spin': 'reverse-spin 0.5s linear infinite',
+            },
             fontFamily: {
-                sans: ['Raleway', ...defaultTheme.fontFamily.sans],
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             gridTemplateColumns: {
                 8: 'repeat(8, minmax(0, 1fr))',
+            },
+            keyframes: {
+                shimmer: {
+                    '100%': {
+                        transform: 'translateX(100%)',
+                    },
+                },
+                'reverse-spin': {
+                    from: {
+                        transform: 'rotate(360deg)',
+                    },
+                },
             },
         },
     },

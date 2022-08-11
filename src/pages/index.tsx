@@ -3,11 +3,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import SearchBar from '../components/search.bar';
 import SideNav from '../components/sidenav';
-import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
-    // const { data, error } = trpc.useQuery(['example.getAll']);
-
     return (
         <>
             <Head>
@@ -31,7 +28,11 @@ function MainLayout() {
             </div>
             <div className="flex flex-1 flex-col items-center justify-center">
                 <div className="relative w-[22rem] h-[22rem] opacity-70">
-                    <Image src="/images/launching.svg" layout="fill" />
+                    <Image
+                        src="/images/launching.svg"
+                        layout="fill"
+                        alt="Empty search image"
+                    />
                 </div>
                 <div className="text-4xl text-gray-font mb-2">
                     Track your stats with Shark

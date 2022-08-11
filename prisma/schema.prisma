@@ -1,16 +1,74 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-    provider = "prisma-client-js"
-    output   = "../node_modules/@prisma/client"
+generator js {
+  provider        = "prisma-client-js"
+  output          = "../node_modules/@prisma/client"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
-model Example {
-    id String @id @default(cuid())
+model Player {
+  name        String                @id @default(cuid())
+  quests      PlayerQuestLog[]
+  diaries     PlayerDiaryLog[]
+  combatTasks PlayerCombatTaskLog[]
+}
+
+model Quest {
+  id          String           @id @default(cuid())
+  players     PlayerQuestLog[]
+  url         String
+  title       String
+  difficulty  String
+  questPoints Int
+  statReqs    Json
+  questReqs   Json
+  itemReqs    Json
+}
+
+model Diary {
+  id      String           @id @default(cuid())
+  players PlayerDiaryLog[]
+}
+
+model CombatTask {
+  id      String                @id @default(cuid())
+  players PlayerCombatTaskLog[]
+}
+
+model PlayerQuestLog {
+  player     Player  @relation(fields: [playerName], references: [name])
+  playerName String
+  quest      Quest   @relation(fields: [questId], references: [id])
+  questId    String
+  started    Boolean
+  completed  Boolean
+
+  @@id([playerName, questId])
+}
+
+model PlayerDiaryLog {
+  player     Player @relation(fields: [playerName], references: [name])
+  playerName String
+  diary      Diary  @relation(fields: [diaryId], references: [id])
+  diaryId    String
+  progress   Json
+
+  @@id([playerName, diaryId])
+}
+
+model PlayerCombatTaskLog {
+  player       Player     @relation(fields: [playerName], references: [name])
+  playerName   String
+  combatTask   CombatTask @relation(fields: [combatTaskId], references: [id])
+  combatTaskId String
+  progress     Json
+
+  @@id([playerName, combatTaskId])
 }

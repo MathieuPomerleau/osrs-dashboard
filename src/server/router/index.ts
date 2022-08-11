@@ -1,10 +1,9 @@
 import { createRouter } from './context';
 import superjson from 'superjson';
-
-import { exampleRouter } from './example';
+import { playerRouter } from './player';
 
 export const appRouter = createRouter()
     .transformer(superjson)
-    .merge('example.', exampleRouter);
+    .merge('player.', playerRouter);
 
 export type AppRouter = typeof appRouter;

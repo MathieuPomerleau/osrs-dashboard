@@ -19,12 +19,16 @@ const PlayerNamePage: NextPage = () => {
                 <meta name="description" content="OSRS stats dashboard" />
             </Head>
             <SideNav />
-            <PlayerSummary
-                name={name}
-                selected={selected}
-                setSelected={setSelected}
-            />
-            <PlayerContent selected={selected} />
+            <div className="flex flex-col h-full py-10 pr-10 w-[30rem] bg-gray-1st text-gray-font">
+                <PlayerSummary
+                    name={name}
+                    selected={selected}
+                    setSelected={setSelected}
+                />
+            </div>
+            <div className="flex flex-1 flex-col p-10">
+                <PlayerContent name={name} selected={selected} />
+            </div>
         </>
     );
 };

@@ -24,7 +24,7 @@ function Logo() {
     return (
         <Link href="/">
             <a className="relative w-16 h-16">
-                <Image src="/images/shark.png" layout="fill" />
+                <Image src="/images/shark.png" layout="fill" alt="Shark logo" />
             </a>
         </Link>
     );

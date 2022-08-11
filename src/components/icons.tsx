@@ -1,5 +1,69 @@
+import { ChartBarIcon } from '@heroicons/react/outline';
+import { SkillName } from '../model/ui';
+
 interface IconProps {
     className: string;
+}
+
+function ResolveIconByKey({
+    skillName,
+    className,
+}: {
+    skillName: SkillName;
+    className: string;
+}) {
+    switch (skillName) {
+        case 'attack':
+            return <AttackIcon className={className} />;
+        case 'agility':
+            return <AgilityIcon className={className} />;
+        case 'construction':
+            return <ConstructionIcon className={className} />;
+        case 'cooking':
+            return <CookingIcon className={className} />;
+        case 'crafting':
+            return <CraftingIcon className={className} />;
+        case 'defence':
+            return <DefenseIcon className={className} />;
+        case 'farming':
+            return <FarmingIcon className={className} />;
+        case 'firemaking':
+            return <FiremakingIcon className={className} />;
+        case 'fishing':
+            return <FishingIcon className={className} />;
+        case 'fletching':
+            return <FletchingIcon className={className} />;
+        case 'herblore':
+            return <HerbloreIcon className={className} />;
+        case 'hitpoints':
+            return <HitpointsIcon className={className} />;
+        case 'hunter':
+            return <HunterIcon className={className} />;
+        case 'magic':
+            return <MagicIcon className={className} />;
+        case 'mining':
+            return <MiningIcon className={className} />;
+        case 'prayer':
+            return <PrayerIcon className={className} />;
+        case 'ranged':
+            return <RangedIcon className={className} />;
+        case 'runecrafting':
+            return <RunecraftingIcon className={className} />;
+        case 'slayer':
+            return <SlayerIcon className={className} />;
+        case 'smithing':
+            return <SmithingIcon className={className} />;
+        case 'strength':
+            return <StrengthIcon className={className} />;
+        case 'thieving':
+            return <ThievingIcon className={className} />;
+        case 'total':
+            return (
+                <ChartBarIcon className="w-12 h-12 stroke-1 stroke-primary mr-3 mt-3" />
+            );
+        case 'woodcutting':
+            return <WoodcuttingIcon className={className} />;
+    }
 }
 
 function IronManIcon({ className }: IconProps) {
@@ -34,9 +98,9 @@ function WindRoseIcon({ className }: IconProps) {
         >
             <path
                 d="M15.6667 7.66667L21 5L18.3333 10.3333M18.3333 15.6667L21 21L15.6667 18.3333M10.3333 18.3333L5 21L7.66667 15.6667M10.3333 7.66667L5 5L7.66667 10.3333M1 13L10.3333 15.6667L13 25L15.6667 15.6667L25 13L15.6667 10.3333L13 1L10.3333 10.3333L1 13Z"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );
@@ -57,7 +121,7 @@ function AttackIcon({ className }: IconProps) {
     );
 }
 
-function HealthIcon({ className }: IconProps) {
+function HitpointsIcon({ className }: IconProps) {
     return (
         <svg
             width="42"
@@ -177,7 +241,7 @@ function FishingIcon({ className }: IconProps) {
     );
 }
 
-function RangeIcon({ className }: IconProps) {
+function RangedIcon({ className }: IconProps) {
     return (
         <svg
             width="42"
@@ -387,30 +451,4 @@ function HunterIcon({ className }: IconProps) {
     );
 }
 
-export {
-    IronManIcon,
-    WindRoseIcon,
-    AttackIcon,
-    HealthIcon,
-    MiningIcon,
-    StrengthIcon,
-    AgilityIcon,
-    SmithingIcon,
-    DefenseIcon,
-    HerbloreIcon,
-    FishingIcon,
-    RangeIcon,
-    ThievingIcon,
-    CookingIcon,
-    PrayerIcon,
-    CraftingIcon,
-    FiremakingIcon,
-    MagicIcon,
-    FletchingIcon,
-    WoodcuttingIcon,
-    RunecraftingIcon,
-    SlayerIcon,
-    FarmingIcon,
-    ConstructionIcon,
-    HunterIcon,
-};
+export { IronManIcon, WindRoseIcon, ResolveIconByKey };
