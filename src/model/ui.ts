@@ -44,3 +44,20 @@ export type Skill = {
     readonly level: number;
     readonly xp: number;
 };
+
+export type SkillRequirement = {
+    readonly level: string;
+    readonly skill: string;
+    readonly boostable: boolean;
+};
+
+export type MappedQuest = {
+    readonly id: string;
+    readonly url: string;
+    readonly title: string;
+    readonly difficulty: string;
+    readonly questPoints: number;
+    readonly statReqs: SkillRequirement[];
+    readonly questReqs: string[];
+    readonly itemReqs: string[];
+};

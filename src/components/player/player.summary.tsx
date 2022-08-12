@@ -1,23 +1,22 @@
 import {
     ChartBarIcon,
     ChevronLeftIcon,
-    ExclamationIcon,
     ExternalLinkIcon,
     RefreshIcon,
 } from '@heroicons/react/outline';
 import { LightningBoltIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { PlayerGet } from '../model/queries';
-import { SelectedTab, Setter } from '../model/ui';
+import { PlayerGet } from '../../model/queries';
+import { SelectedTab, Setter } from '../../model/ui';
 import {
     calculateCombatLevel,
     getTotalLevels,
-} from '../utils/skill.calculator';
-import { trpc } from '../utils/trpc';
-import { FadeIn, LoadingSpinner, Shimmer } from './animation';
-import { IronManIcon, WindRoseIcon } from './icons';
-import { motion } from 'framer-motion';
+} from '../../utils/skill.calculator';
+import { trpc } from '../../utils/trpc';
+import { FadeIn, LoadingSpinner, Shimmer } from '../animation';
+import { IronManIcon, WindRoseIcon } from '../icons';
+import { ExclamationContainer } from '../containers';
 
 type PlayerSummaryProps = {
     name: string;
@@ -26,7 +25,6 @@ type PlayerSummaryProps = {
 };
 
 function PlayerSummary({ name, selected, setSelected }: PlayerSummaryProps) {
-    const router = useRouter();
     const [isManualFetching, setIsManualFetching] = useState(false);
     const { data, isLoading, error, refetch } = trpc.useQuery(
         ['player.get', name],
@@ -76,17 +74,21 @@ function PlayerSummary({ name, selected, setSelected }: PlayerSummaryProps) {
                 setSelected={setSelected}
             />
 
-            <button
-                className="flex items-center transition-all duration-100 ease-in text-primary mt-auto ml-auto border-b border-b-transparent hover:border-b-primary"
-                onClick={() =>
-                    window.open(
-                        `https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1=${name}`
-                    )
-                }
-            >
-                View Highscores on the OSRS site
-                <ExternalLinkIcon className="w-5 h-5 ml-2" />
-            </button>
+            <div className="mt-auto ml-auto ">
+                <FadeIn>
+                    <button
+                        className="flex items-center transition-all duration-100 ease-in text-primary border-b border-b-transparent hover:border-b-primary"
+                        onClick={() =>
+                            window.open(
+                                `https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1=${name}`
+                            )
+                        }
+                    >
+                        View Highscores on the OSRS site
+                        <ExternalLinkIcon className="w-5 h-5 ml-2" />
+                    </button>
+                </FadeIn>
+            </div>
         </>
     );
 }
@@ -144,22 +146,6 @@ function PlayerSummaryError({ name, error }: { name: string; error: any }) {
             title="Unexpected error"
             subtitle={`Failed to display information for ${name}.`}
         />
-    );
-}
-
-function ExclamationContainer({
-    title,
-    subtitle,
-}: {
-    title: string;
-    subtitle: string;
-}) {
-    return (
-        <div className="flex flex-col items-center">
-            <ExclamationIcon className="w-24 h-24 text-gray-font-lightest" />
-            <div className="text-2xl pt-4">{title}</div>
-            <div className="text-gray-font-light pt-1">{subtitle}</div>
-        </div>
     );
 }
 

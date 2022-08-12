@@ -2,8 +2,8 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import PlayerContent from '../../components/player.content';
-import PlayerSummary from '../../components/player.summary';
+import PlayerContent from '../../components/player/player.content';
+import PlayerSummary from '../../components/player/player.summary';
 import SideNav from '../../components/sidenav';
 import { SelectedTab } from '../../model/ui';
 

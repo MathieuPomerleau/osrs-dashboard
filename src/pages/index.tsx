@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { FadeIn } from '../components/animation';
-import SearchBar from '../components/search.bar';
+import SearchBar from '../components/search/search.bar';
 import SideNav from '../components/sidenav';
 
 const Home: NextPage = () => {

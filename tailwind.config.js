@@ -23,6 +23,7 @@ module.exports = {
                 '2nd': '#272727',
                 '3rd': '#363636',
                 font: '#C5C5C5',
+                'font-mid': '#9A9A9A',
                 'font-light': '#6A6A6A',
                 'font-lightest': '#464646',
             },
